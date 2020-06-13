@@ -2,13 +2,16 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
+
     <div id="settings" class="container">
       <div class="header">
-        N-Back
+        <div class="header-title">
+          N-Back
+        </div>
       </div>
       <div class="main">
         <div class="section">
@@ -39,16 +42,24 @@
         </button>
       </div>
     </div>
+
     <div id="game" class="container">
-      <button id="back-button" class="button">Back</button>
       <div class="header">
-        N-Back
+        <div class="header-title">
+          N-Back
+        </div>
+        <div class="header-right">
+          <button id="back-button" class="button">
+            Back
+          </button>
+        </div>
       </div>
       <div class="main">
-        <div class="game-info">
-          <span>Remaining: 0</span>
+        <div id="canvas-container">
+          <div id="canvas-inner-container">
+            <canvas id="canvas"></canvas>
+          </div>
         </div>
-        <canvas id="canvas" width="400" height="400"></canvas>
       </div>
       <div class="button-bar">
         <button id="position-input" class="button">
@@ -59,6 +70,7 @@
         </button>
       </div>
     </div>
+
     <script src="main.js"></script>
   </body>
 </html>

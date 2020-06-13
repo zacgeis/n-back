@@ -79,7 +79,7 @@ class Entity {
   }
 }
 
-class CountDownEntity extends Entity {
+class CountDown extends Entity {
   constructor(x, y) {
     super();
 
@@ -100,7 +100,7 @@ class CountDownEntity extends Entity {
     // Skip displaying a quick 0.
     if (count == 0) return;
 
-    drawContext.font = "48px 'Open Sans'";
+    drawContext.font = "8rem 'Nunito'";
     drawContext.fillStyle = "black";
     drawContext.strokeStyle = "black";
 
@@ -115,6 +115,109 @@ class CountDownEntity extends Entity {
   }
 }
 
+class Vec2 {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  unit() {
+    let mag = this.magnitude();
+    return new Vec2(this.x / mag, this.y / mag);
+  }
+
+  sub(v) {
+    return new Vec2(this.x - v.x, this.y - v.y);
+  }
+
+  add(v) {
+    return new Vec2(this.x + v.x, this.y + v.y);
+  }
+
+  scalar(s) {
+    return new Vec2(this.x * s, this.y * s);
+  }
+
+  magnitude() {
+    return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+  }
+}
+
+class Vec2Animate {
+  constructor(start, end, duration) {
+    this.start = start;
+    this.current = start;
+    this.end = end;
+    this.time = 0;
+    this.duration = duration;
+    this.active = true;
+  }
+
+  step(delta) {
+    let timePerc = this.time / this.duration;
+
+    let dir = new Vec2(this.end.x - this.start.x, this.end.y - this.start.y);
+    this.current = this.start.add(dir.unit().scalar(dir.magnitude() * timePerc));
+
+    this.time += delta;
+    if (this.time >= this.duration) {
+      this.active = false;
+    }
+  }
+}
+
+// TODO: Convert all x, y to vectors.
+// TODO: Extract out is first draw to the base class
+// TODO: Add bounding box to only redraw changed parts of the screen.
+class BackgroundBox extends Entity {
+  constructor(x, y, size) {
+    super();
+
+    this.x = x;
+    this.y = y;
+    this.size = size;
+
+    this.animation = null;
+
+    this.drawTime = 0;
+    this.isFirstDraw = true;
+  }
+
+  moveTo(x, y, duration) {
+    this.animation = new Vec2Animate(new Vec2(this.x, this.y), new Vec2(x, y), duration);
+  }
+
+  draw(drawContext, delta) {
+    if (this.isFirstDraw) {
+      this.isFirstDraw = false;
+    } else {
+      this.drawTime += delta;
+    }
+
+    if (this.animation != null) {
+      this.animation.step(delta);
+      this.x = this.animation.current.x;
+      this.y = this.animation.current.y;
+      if (!this.animation.active) {
+        this.animation = null;
+      }
+    }
+
+    drawContext.fillStyle = "rgb(200, 200, 200)";
+
+    drawContext.fillRect(
+      this.x - this.size / 2,
+      this.y - this.size / 2,
+      this.size,
+      this.size
+    );
+  }
+
+  isActive() {
+    return true;
+  }
+}
+
 class GameContainer {
   constructor(manager) {
     this.active = false;
@@ -122,6 +225,7 @@ class GameContainer {
     this.lastDrawTime = 0;
 
     this.entities = [];
+    this.backgroundBoxes = [];
   }
 
   init() {
@@ -130,16 +234,17 @@ class GameContainer {
     this.soundElement = document.getElementById("sound-input");
     this.backElement = document.getElementById("back-button");
     this.canvasElement = document.getElementById("canvas");
+    this.canvasContainerElement = document.getElementById("canvas-inner-container");
 
     this.drawContext = this.canvasElement.getContext("2d");
 
-    this.positionElement.addEventListener("input", this.positionHandler.bind(this));
-    this.soundElement.addEventListener("input", this.soundHandler.bind(this));
+    this.positionElement.addEventListener("click", this.positionHandler.bind(this));
+    this.soundElement.addEventListener("click", this.soundHandler.bind(this));
     this.backElement.addEventListener("click", this.backHandler.bind(this));
   }
 
   positionHandler() {
-
+    this.backgroundBoxes[0].moveTo(10, 10, 1000);
   }
 
   soundHandler() {
@@ -151,8 +256,21 @@ class GameContainer {
   }
 
   startGame() {
+    this.canvasElement.width = this.canvasContainerElement.clientWidth;
+    this.canvasElement.height = this.canvasContainerElement.clientHeight;
+
+    this.canvasWidth = this.canvasElement.width;
+    this.canvasHeight = this.canvasElement.height;
+
+    for (let i = 0; i < 8; i++) {
+      let backgroundBox = new BackgroundBox(this.canvasWidth / 2, this.canvasHeight / 2, 40);
+      this.backgroundBoxes.push(backgroundBox);
+      this.entities.push(backgroundBox);
+    }
+
     this.active = true;
-    this.entities.push(new CountDownEntity(200, 200));
+    this.entities.push(new CountDown(this.canvasWidth / 2, this.canvasHeight / 2));
+    this.entities.push();
     this.draw();
   }
 
@@ -164,7 +282,7 @@ class GameContainer {
 
     // Reset.
     this.drawContext.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-    this.drawContext.font = "48px 'Open Sans'";
+    this.drawContext.font = "1rem 'Nunito'";
     this.drawContext.fillStyle = "black";
     this.drawContext.strokeStyle = "black";
 

@@ -1,5 +1,5 @@
 * {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Nunito', sans-serif;
 }
 
 html, body {
@@ -18,13 +18,36 @@ html, body {
 }
 
 .header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-bottom: 1rem;
+}
+
+.header-title {
   text-align: center;
-  font-size: 2.5rem;
-  margin: 1rem 0;
+  grid-column-start: 2;
+  font-size: 3rem;
+}
+
+.header-right {
+  justify-self: end;
+  grid-column-start: 3;
 }
 
 .main {
   flex: 1 1 auto;
+}
+
+#canvas-container {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 7rem;
+}
+
+#canvas-inner-container {
+  width: 100%;
+  height: 100%;
 }
 
 .section {
@@ -34,7 +57,6 @@ html, body {
 
 .setting-label {
   font-size: 1.3rem;
-  font-weight: bold;
   margin-bottom: 1rem;
 }
 
@@ -57,24 +79,20 @@ html, body {
   margin-right: 0;
 }
 
+.button-bar .button {
+  flex: 1 1 auto;
+}
+
 .button {
+  height: 3.5rem;
+  width: 12rem;
   font-size: 1.5rem;
   border-radius: 1rem;
   border: none;
   margin-right: 0.7rem;
-  flex: 1 1 auto;
   outline: none;
   transition: background-color 0.2s;
   background: rgba(208, 208, 208 0.5);
-}
-
-#back-button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin-right: 0;
-  height: 4rem;
-  width: 25%;
 }
 
 .button:hover {
