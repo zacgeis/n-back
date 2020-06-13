@@ -143,6 +143,17 @@ class Vec2 {
   }
 }
 
+// From https://easings.net/#easeOutElastic
+function easeOutElastic(x) {
+  const c4 = (2 * Math.PI) / 3;
+
+  return x === 0
+    ? 0
+    : x === 1
+    ? 1
+    : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
+}
+
 class Vec2Animate {
   constructor(start, end, duration) {
     this.start = start;
@@ -155,6 +166,7 @@ class Vec2Animate {
 
   step(delta) {
     let timePerc = this.time / this.duration;
+    timePerc = easeOutElastic(timePerc);
 
     let dir = new Vec2(this.end.x - this.start.x, this.end.y - this.start.y);
     this.current = this.start.add(dir.unit().scalar(dir.magnitude() * timePerc));
@@ -196,8 +208,8 @@ class BackgroundBox extends Entity {
 
     if (this.animation != null) {
       this.animation.step(delta);
-      this.x = this.animation.current.x;
-      this.y = this.animation.current.y;
+      this.x = Math.round(this.animation.current.x);
+      this.y = Math.round(this.animation.current.y);
       if (!this.animation.active) {
         this.animation = null;
       }
@@ -223,6 +235,8 @@ class GameContainer {
     this.active = false;
     this.manager = manager;
     this.lastDrawTime = 0;
+    this.canvasWidth = 0;
+    this.canvasHeight = 0;
 
     this.entities = [];
     this.backgroundBoxes = [];
@@ -244,7 +258,12 @@ class GameContainer {
   }
 
   positionHandler() {
-    this.backgroundBoxes[0].moveTo(10, 10, 1000);
+    for (let box of this.backgroundBoxes) {
+      let x = Math.random() * this.canvasWidth;
+      let y = Math.random() * this.canvasHeight;
+      let d = 1000 + Math.random() * 1000;
+      box.moveTo(x, y, d);
+    }
   }
 
   soundHandler() {
