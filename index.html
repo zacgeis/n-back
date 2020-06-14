@@ -13,7 +13,7 @@
           N-Back
         </div>
       </div>
-      <div class="main">
+      <div id="settings-main" class="main">
         <div class="section">
           <div class="setting-label">Modalities:</div>
           <div class="setting-control">
@@ -43,23 +43,19 @@
       </div>
     </div>
 
-    <div id="game" class="container">
+    <div id="game" class="container off-screen">
       <div class="header">
         <div class="header-title">
           N-Back
         </div>
         <div class="header-right">
           <button id="back-button" class="button">
-            Back
+            X
           </button>
         </div>
       </div>
-      <div class="main">
-        <div id="canvas-container">
-          <div id="canvas-inner-container">
-            <canvas id="canvas"></canvas>
-          </div>
-        </div>
+      <div id="canvas-container" class="main">
+        <canvas id="canvas"></canvas>
       </div>
       <div class="button-bar">
         <button id="position-input" class="button">
@@ -71,6 +67,6 @@
       </div>
     </div>
 
-    <script src="main.js"></script>
+    <script type="module" src="out/main.js"></script>
   </body>
 </html>
