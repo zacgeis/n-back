@@ -80,6 +80,7 @@ html, body {
 }
 
 #back-button {
+  font-size: 2.5rem;
   padding: 0 2rem;
   height: 100%;
 }

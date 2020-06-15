@@ -2,10 +2,6 @@ import { Game } from "./game.js"
 
 class SettingsContainer {
   manager: Manager;
-  backCountValue: number;
-  speedValue: number;
-  positionValue: boolean;
-  soundValue: boolean;
 
   containerElement: HTMLElement;
   positionSettingElement: HTMLInputElement;
@@ -19,10 +15,6 @@ class SettingsContainer {
   constructor(manager: Manager) {
     this.manager = manager;
 
-    this.backCountValue = 0;
-    this.speedValue = 0;
-    this.positionValue = true;
-    this.soundValue = true;
   }
 
   init() {
@@ -35,46 +27,48 @@ class SettingsContainer {
     this.speedDisplayElement = document.getElementById("speed-display");
     this.startElement = document.getElementById("start-input");
 
-    this.positionSettingElement.addEventListener("input", this.positionSettingHandler.bind(this));
-    this.soundSettingElement.addEventListener("input", this.soundSettingHandler.bind(this));
     this.backCountElement.addEventListener("input", this.backCountHandler.bind(this));
     this.speedElement.addEventListener("input", this.speedHandler.bind(this));
     this.startElement.addEventListener("click", this.startHandler.bind(this));
 
-    // Grab initial values.
-    this.positionSettingHandler();
-    this.soundSettingHandler();
+    // Set text to initial values.
     this.backCountHandler();
     this.speedHandler();
   }
 
+  getBackCountValue() {
+    return Number(this.backCountElement.value);
+  }
+
+  getSpeedValue() {
+    return Number(this.speedElement.value) * 0.1;
+  }
+
+  getPositionValue(): boolean {
+    return this.positionSettingElement.checked;
+  }
+
+  getSoundValue(): boolean {
+    return this.soundSettingElement.checked;
+  }
+
   startHandler() {
     let params = {
-      position: this.positionValue,
-      sound: this.soundValue,
-      backCount: this.backCountValue,
-      speed: this.speedValue,
+      position: this.getPositionValue(),
+      sound: this.getSoundValue(),
+      backCount: this.getBackCountValue(),
+      speed: this.getSpeedValue(),
     };
 
     this.manager.startGame(params);
   }
 
-  positionSettingHandler() {
-    this.positionValue = this.positionSettingElement.checked;
-  }
-
-  soundSettingHandler() {
-    this.soundValue = this.soundSettingElement.checked;
-  }
-
   backCountHandler() {
-    this.backCountValue = Number(this.backCountElement.value);
-    this.backCountDisplayElement.innerText = String(this.backCountValue);
+    this.backCountDisplayElement.innerText = String(this.getBackCountValue());
   }
 
   speedHandler() {
-    this.speedValue = Number(this.speedElement.value) * 0.1;
-    this.speedDisplayElement.innerText = String(this.speedValue).substr(0, 3);
+    this.speedDisplayElement.innerText = String(this.getSpeedValue()).substr(0, 3);
   }
 
   hide() {

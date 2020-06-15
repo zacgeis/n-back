@@ -2,10 +2,6 @@ import { Game } from "./game.js";
 var SettingsContainer = /** @class */ (function () {
     function SettingsContainer(manager) {
         this.manager = manager;
-        this.backCountValue = 0;
-        this.speedValue = 0;
-        this.positionValue = true;
-        this.soundValue = true;
     }
     SettingsContainer.prototype.init = function () {
         this.containerElement = document.getElementById("settings");
@@ -16,39 +12,39 @@ var SettingsContainer = /** @class */ (function () {
         this.speedElement = document.getElementById("speed-input");
         this.speedDisplayElement = document.getElementById("speed-display");
         this.startElement = document.getElementById("start-input");
-        this.positionSettingElement.addEventListener("input", this.positionSettingHandler.bind(this));
-        this.soundSettingElement.addEventListener("input", this.soundSettingHandler.bind(this));
         this.backCountElement.addEventListener("input", this.backCountHandler.bind(this));
         this.speedElement.addEventListener("input", this.speedHandler.bind(this));
         this.startElement.addEventListener("click", this.startHandler.bind(this));
-        // Grab initial values.
-        this.positionSettingHandler();
-        this.soundSettingHandler();
+        // Set text to initial values.
         this.backCountHandler();
         this.speedHandler();
     };
+    SettingsContainer.prototype.getBackCountValue = function () {
+        return Number(this.backCountElement.value);
+    };
+    SettingsContainer.prototype.getSpeedValue = function () {
+        return Number(this.speedElement.value) * 0.1;
+    };
+    SettingsContainer.prototype.getPositionValue = function () {
+        return this.positionSettingElement.checked;
+    };
+    SettingsContainer.prototype.getSoundValue = function () {
+        return this.soundSettingElement.checked;
+    };
     SettingsContainer.prototype.startHandler = function () {
         var params = {
-            position: this.positionValue,
-            sound: this.soundValue,
-            backCount: this.backCountValue,
-            speed: this.speedValue
+            position: this.getPositionValue(),
+            sound: this.getSoundValue(),
+            backCount: this.getBackCountValue(),
+            speed: this.getSpeedValue()
         };
         this.manager.startGame(params);
     };
-    SettingsContainer.prototype.positionSettingHandler = function () {
-        this.positionValue = this.positionSettingElement.checked;
-    };
-    SettingsContainer.prototype.soundSettingHandler = function () {
-        this.soundValue = this.soundSettingElement.checked;
-    };
     SettingsContainer.prototype.backCountHandler = function () {
-        this.backCountValue = Number(this.backCountElement.value);
-        this.backCountDisplayElement.innerText = String(this.backCountValue);
+        this.backCountDisplayElement.innerText = String(this.getBackCountValue());
     };
     SettingsContainer.prototype.speedHandler = function () {
-        this.speedValue = Number(this.speedElement.value) * 0.1;
-        this.speedDisplayElement.innerText = String(this.speedValue).substr(0, 3);
+        this.speedDisplayElement.innerText = String(this.getSpeedValue()).substr(0, 3);
     };
     SettingsContainer.prototype.hide = function () {
         this.containerElement.classList.add("off-screen");
