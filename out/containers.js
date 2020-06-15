@@ -66,17 +66,25 @@ var GameContainer = /** @class */ (function () {
         this.backElement = document.getElementById("back-button");
         this.canvasElement = document.getElementById("canvas");
         this.canvasContainerElement = document.getElementById("canvas-container");
-        this.positionElement.addEventListener("click", this.positionHandler.bind(this));
-        this.soundElement.addEventListener("click", this.soundHandler.bind(this));
-        this.backElement.addEventListener("click", this.backHandler.bind(this));
+        // Handle for mobile quick touches.
+        this.positionElement.addEventListener("touchstart", this.positionHandler.bind(this));
+        this.soundElement.addEventListener("touchstart", this.soundHandler.bind(this));
+        this.backElement.addEventListener("touchstart", this.backHandler.bind(this));
+        // Handle for desktop quick clicks.
+        this.positionElement.addEventListener("mousedown", this.positionHandler.bind(this));
+        this.soundElement.addEventListener("mousedown", this.soundHandler.bind(this));
+        this.backElement.addEventListener("mousedown", this.backHandler.bind(this));
     };
-    GameContainer.prototype.positionHandler = function () {
+    GameContainer.prototype.positionHandler = function (e) {
+        e.preventDefault();
         this.game.positionClick();
     };
-    GameContainer.prototype.soundHandler = function () {
+    GameContainer.prototype.soundHandler = function (e) {
+        e.preventDefault();
         this.game.soundClick();
     };
-    GameContainer.prototype.backHandler = function () {
+    GameContainer.prototype.backHandler = function (e) {
+        e.preventDefault();
         this.endGame();
     };
     GameContainer.prototype.startGame = function () {

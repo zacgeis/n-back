@@ -105,20 +105,32 @@ class GameContainer {
     this.canvasElement = <HTMLCanvasElement> document.getElementById("canvas");
     this.canvasContainerElement = document.getElementById("canvas-container");
 
-    this.positionElement.addEventListener("click", this.positionHandler.bind(this));
-    this.soundElement.addEventListener("click", this.soundHandler.bind(this));
-    this.backElement.addEventListener("click", this.backHandler.bind(this));
+    // Handle for mobile quick touches.
+    this.positionElement.addEventListener("touchstart", this.positionHandler.bind(this));
+    this.soundElement.addEventListener("touchstart", this.soundHandler.bind(this));
+    this.backElement.addEventListener("touchstart", this.backHandler.bind(this));
+
+    // Handle for desktop quick clicks.
+    this.positionElement.addEventListener("mousedown", this.positionHandler.bind(this));
+    this.soundElement.addEventListener("mousedown", this.soundHandler.bind(this));
+    this.backElement.addEventListener("mousedown", this.backHandler.bind(this));
   }
 
-  positionHandler() {
+  positionHandler(e: Event) {
+    e.preventDefault();
+
     this.game.positionClick();
   }
 
-  soundHandler() {
+  soundHandler(e: Event) {
+    e.preventDefault();
+
     this.game.soundClick();
   }
 
-  backHandler() {
+  backHandler(e: Event) {
+    e.preventDefault();
+
     this.endGame();
   }
 
